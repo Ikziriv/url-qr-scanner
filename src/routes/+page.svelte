@@ -25,7 +25,7 @@
 		}
 
 		if (!qrContent || !qrContent.trim()) {
-			errorMessage = 'Silakan Masukkan Logo dan URL.';
+			errorMessage = 'Silakan Isi Logo dan URL.';
 			const ctx = canvasElement.getContext('2d');
 			if (ctx) {
 				ctx.clearRect(0, 0, canvasElement.width, canvasElement.height);
@@ -218,7 +218,7 @@
 
                 <div class="flex flex-col w-full h-auto items-start mb-4">
                     <label class="w-full h-auto p-2 border border-gray-300 text-zinc-700 text-xs uppercase font-bold" for="qrContentInput">
-                        Masukkan URL 
+                        URL Link 
                     </label>
                     <input
                         type="text"
@@ -254,7 +254,7 @@
                 </button>
             {:else if !errorMessage} 
                 <!-- Show this prompt only if there's no content, no QR, and no error yet -->
-                <p class="info-prompt">Masukkan konten di atas untuk membuat QR code.</p>
+                <p class="info-prompt">Masukan konten di atas untuk membuat QR code.</p>
             {/if}
         </div>
     </div>
