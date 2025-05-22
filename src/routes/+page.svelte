@@ -15,17 +15,43 @@
 	let errorMessage: string = '';
 	let qrCodeDataUrlForDownload: string = '';
 	let currentGenerationId = 0; 
+	let notificationMessage: string = '';
+	let notificationType: 'success' | 'error' | '' = '';
+	let notificationTimeoutId: number | null = null;
 
+	function clearNotification() {
+		notificationMessage = '';
+		notificationType = '';
+		if (notificationTimeoutId) {
+			clearTimeout(notificationTimeoutId);
+			notificationTimeoutId = null;
+		}
+	}
+
+	function showNotification(message: string, type: 'success' | 'error', duration: number = 5000) {
+		clearNotification(); // Clear any existing notification first
+		notificationMessage = message;
+		notificationType = type;
+		if (duration > 0) {
+			notificationTimeoutId = window.setTimeout(() => {
+				clearNotification();
+			}, duration);
+		}
+	}
+	
 	async function generateQRCode() {
-		const localGenerationId = ++currentGenerationId; 
+		const localGenerationId = ++currentGenerationId;
+		clearNotification(); 
+
 
 		if (!canvasElement) {
-			errorMessage = 'Canvas Belum Tersedia.'; 
+			showNotification('Canvas Belum Tersedia.', 'error');
 			return;
 		}
 
 		if (!qrContent || !qrContent.trim()) {
-			errorMessage = 'Silakan Isi Logo dan URL.';
+			showNotification('Silakan masukkan konten untuk QR code.', 'error');
+			
 			const ctx = canvasElement.getContext('2d');
 			if (ctx) {
 				ctx.clearRect(0, 0, canvasElement.width, canvasElement.height);
@@ -38,7 +64,7 @@
 		try {
 			const ctx = canvasElement.getContext('2d');
 			if (!ctx) {
-				errorMessage = 'Tidak dapat memuat konteks canvas.';
+				showNotification('Tidak dapat memuat konteks canvas.', 'error');
 				return;
 			}
 
@@ -93,7 +119,8 @@
 				};
 				img.onerror = () => {
 					if (localGenerationId !== currentGenerationId) return;
-					errorMessage = 'Gagal memuat gambar logo. QR code dibuat tanpa logo.';
+					showNotification('Gagal memuat gambar logo. QR code dibuat tanpa logo.', 'error');
+					
 					qrCodeDataUrlForDownload = canvasElement.toDataURL('image/png');
 				};
 				img.src = logoPreview; // Start loading the image
@@ -103,7 +130,7 @@
 		} catch (err) {
 			if (localGenerationId !== currentGenerationId) return; // Stale error
 			console.error('QR Code Generation Error:', err);
-			errorMessage = `Error generating QR Code: ${err instanceof Error ? err.message : String(err)}`;
+			showNotification(`Error generating QR Code: ${err instanceof Error ? err.message : String(err)}`, 'error');
 			qrCodeDataUrlForDownload = '';
 
             if(canvasElement){
@@ -122,7 +149,7 @@
 		if (file) {
             const allowedTypes = ['image/png', 'image/jpeg', 'image/gif', 'image/svg+xml'];
             if (!allowedTypes.includes(file.type)) {
-                errorMessage = 'Jenis file logo tidak didukung (gunakan PNG, JPG, GIF, SVG).';
+				showNotification('Jenis file logo tidak didukung (gunakan PNG, JPG, GIF, SVG).', 'error');
                 logoFile = null;
                 logoPreview = null;
                 if (target) target.value = '';
@@ -130,12 +157,15 @@
             }
             if (file.size > MAX_LOGO_SIZE_BYTES) {
                 errorMessage = `Ukuran file logo terlalu besar (maks ${MAX_LOGO_SIZE_BYTES / 1024 / 1024}MB).`;
-                logoFile = null;
+				showNotification(errorMessage, 'error');
+                
+				logoFile = null;
                 logoPreview = null;
                 if (target) target.value = '';
                 return;
             }
             errorMessage = ''; 
+            clearNotification();
 
 			logoFile = file;
 			const reader = new FileReader();
@@ -144,12 +174,15 @@
 			};
             reader.onerror = () => {
                 errorMessage = 'Gagal membaca file logo.';
+				showNotification(errorMessage, 'error');
+
                 logoFile = null;
                 logoPreview = null;
                 if (target) target.value = '';
             }
 			reader.readAsDataURL(file);
 		} else {
+			clearNotification();
 			logoFile = null;
 			logoPreview = null;
         }
@@ -158,6 +191,7 @@
 	function downloadQRCode() {
 		if (!qrCodeDataUrlForDownload) {
 			errorMessage = 'Tidak ada QR code untuk diunduh.';
+			showNotification(errorMessage, 'error');
 			return;
 		}
 		const link = document.createElement('a');
@@ -166,6 +200,7 @@
 		document.body.appendChild(link);
 		link.click();
 		document.body.removeChild(link);
+		showNotification('QR Code berhasil diunduh!', 'success', 3000);
 	}
 	$: (qrContent, logoPreview), canvasElement && generateQRCode();
 </script>
@@ -177,12 +212,18 @@
 
 <div class="flex justify-center items-center w-full h-auto md:h-screen bg-gray-100">
     <div class="flex flex-col justify-center items-center w-full h-auto md:max-w-6xl bg-white p-8 rounded-xl shaodw-xl relative">
-        {#if errorMessage}
-        <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-r from-orange-500 to-red-500 h-auto rounded-b-xl">
-           <div class="flex justify-center items-center w-full h-auto py-1 px-4">
-                <p class="text-zinc-50 font-bold text-xs uppercase">{errorMessage}</p>
-           </div>
-        </div>
+        {#if notificationMessage}
+        <div
+            class="absolute bottom-0 left-0 right-0 h-auto rounded-b-xl transition-opacity duration-300 ease-in-out"
+            class:bg-gradient-to-r={notificationType === 'error'}
+            class:from-orange-500={notificationType === 'error'}
+            class:to-red-500={notificationType === 'error'}
+            class:bg-green-500={notificationType === 'success'}
+        >
+			<div class="flex justify-center items-center w-full h-auto py-1 px-4">
+				<p class="text-zinc-50 font-bold text-xs uppercase">{notificationMessage}</p>
+			</div>
+		</div>
         {/if}
 
         <div class="flex flex-col md:flex-row justify-between items-start w-full mb-4">
@@ -252,7 +293,7 @@
                     <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-download"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2" /><path d="M7 11l5 5l5 -5" /><path d="M12 4l0 12" /></svg>
                     Download QR
                 </button>
-            {:else if !errorMessage} 
+            {:else if !notificationMessage}
                 <!-- Show this prompt only if there's no content, no QR, and no error yet -->
                 <p class="info-prompt">Masukan konten di atas untuk membuat QR code.</p>
             {/if}
