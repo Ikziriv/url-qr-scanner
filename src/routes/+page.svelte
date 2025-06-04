@@ -227,7 +227,7 @@
         {/if}
 
         <div class="flex flex-col md:flex-row justify-between items-start w-full mb-4">
-            <div class="flex flex-col w-full md:w-auto h-auto">
+            <div class="flex flex-col-reverse md:flex-col w-full md:w-auto h-auto">
 				<div class="flex flex-col -space-y-1 w-auto h-auto items-start mb-8 md:mb-4">
 					<h1 class="font-black uppercase text-2xl">Generator QR</h1>
 					<p class="subtitle text-sm uppercase">
@@ -236,8 +236,8 @@
 					<p class="subtitle text-sm uppercase">
 					</p>
 				</div>
-				<a href="/scanner" class="flex justify-center items-center w-48 h-auto py-2 px-4 bg-zinc-900 rounded-xl text-decoration-none">
-					<span class="font-bold text-sm text-zinc-50">QR Scan</span>
+				<a href="/scanner" class="flex justify-center items-center w-full md:w-48 h-auto py-2 px-4 mb-6 md:mb-0 bg-zinc-900 rounded-xl text-decoration-none">
+					<span class="font-bold text-sm text-zinc-50">QR Scanner</span>
 				</a>
 			</div>
             
