@@ -211,14 +211,14 @@
 </svelte:head>
 
 <div class="flex justify-center items-center w-full h-auto md:h-screen bg-gray-100">
-    <div class="flex flex-col justify-center items-center w-full h-auto md:max-w-6xl bg-white p-8 rounded-xl shaodw-xl relative">
+    <div class="flex flex-col justify-center items-center w-full h-auto md:max-w-6xl bg-white p-8 rounded-xl shadow-xl border relative">
         {#if notificationMessage}
         <div
             class="absolute bottom-0 left-0 right-0 h-auto rounded-b-xl transition-opacity duration-300 ease-in-out"
             class:bg-gradient-to-r={notificationType === 'error'}
-            class:from-orange-500={notificationType === 'error'}
-            class:to-red-500={notificationType === 'error'}
-            class:bg-green-500={notificationType === 'success'}
+            class:from-zinc-900={notificationType === 'error'}
+            class:to-black={notificationType === 'error'}
+            class:bg-green-900={notificationType === 'success'}
         >
 			<div class="flex justify-center items-center w-full h-auto py-1 px-4">
 				<p class="text-zinc-50 font-bold text-xs uppercase">{notificationMessage}</p>
@@ -227,14 +227,19 @@
         {/if}
 
         <div class="flex flex-col md:flex-row justify-between items-start w-full mb-4">
-            <div class="flex flex-col -space-y-1 w-auto h-auto items-start mb-8 md:mb-0">
-                <h1 class="font-black uppercase text-2xl">Generator QR</h1>
-                <p class="subtitle text-sm uppercase">
-					<small>Created by</small><span class="text-xs font-bold ml-1"> DATIN Team</span>
-				</p>
-				<p class="subtitle text-sm uppercase">
-				</p>
-            </div>
+            <div class="flex flex-col w-full md:w-auto h-auto">
+				<div class="flex flex-col -space-y-1 w-auto h-auto items-start mb-8 md:mb-4">
+					<h1 class="font-black uppercase text-2xl">Generator QR</h1>
+					<p class="subtitle text-sm uppercase">
+						<small>Created by</small><span class="text-xs font-bold ml-1"> DATIN Team</span>
+					</p>
+					<p class="subtitle text-sm uppercase">
+					</p>
+				</div>
+				<a href="/scanner" class="flex justify-center items-center w-48 h-auto py-2 px-4 bg-zinc-900 rounded-xl text-decoration-none">
+					<span class="font-bold text-sm text-zinc-50">QR Scan</span>
+				</a>
+			</div>
             
             <div class="bg-zinc-200 rounded-xl w-24 h-24 p-4">
                 {#if logoPreview}
@@ -285,7 +290,7 @@
             </div>
         </div>
 
-        <div class="flex flex-col w-full h-auto items-center">
+        <div class="flex flex-col w-full h-auto items-center pt-6">
             {#if qrCodeDataUrlForDownload}
                 <button 
                     on:click={downloadQRCode} 
@@ -295,7 +300,7 @@
                 </button>
             {:else if !notificationMessage}
                 <!-- Show this prompt only if there's no content, no QR, and no error yet -->
-                <p class="info-prompt">Masukan konten di atas untuk membuat QR code.</p>
+                <p class="info-prompt text-xs uppercase">Masukan konten di atas untuk membuat QR code.</p>
             {/if}
         </div>
     </div>
