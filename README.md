@@ -1,22 +1,68 @@
-# sv
+# URL QR Code Scanner
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+A simple, fast, and user-friendly web application to scan QR codes and instantly access the URLs they contain. Built with Svelte and Tailwind CSS.
 
-## Creating a project
+[!Svelte](https://svelte.dev/)
+[!Tailwind CSS](https://tailwindcss.com/)
+[!Vite](https://vitejs.dev/)
 
-If you're seeing this, you've probably already done this step. Congrats!
+## Table of Contents
 
-```bash
-# create a new project in the current directory
-npx sv create
+- [Demo](#demo)
+- [Features](#features)
+- [Tech Stack](#tech-stack)
+- [Getting Started](#getting-started)
+- [Building](#building)
+- [Contributing](#contributing)
+- [License](#license)
 
-# create a new project in my-app
-npx sv create my-app
-```
+## Demo
 
-## Developing
+You can see a live demo of the application here:
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+**Live Demo**
+![Application Screenshot](demo.png)
+
+## Features
+
+- **Real-time QR Code Scanning**: Utilizes your device's camera to scan QR codes instantly.
+- **URL Detection**: Automatically parses scanned QR codes to find and display valid URLs.
+- **Copy to Clipboard**: Easily copy the detected URL with a single click.
+- **Responsive Design**: A clean and intuitive interface that works seamlessly on desktop and mobile devices.
+- **Fast and Lightweight**: Built with Svelte for optimal performance.
+
+## Tech Stack
+
+- **Frontend**: Svelte
+- **Styling**: Tailwind CSS
+- **Build Tool**: Vite
+
+## Getting Started
+
+To get a local copy up and running, follow these simple steps.
+
+### Prerequisites
+
+Make sure you have Node.js (version 18 or higher) and a package manager like npm or yarn installed.
+
+### Installation
+
+1.  Clone the repository:
+    ```sh
+    git clone https://github.com/your-username/url-qr-scanner.git
+    ```
+2.  Navigate to the project directory:
+    ```sh
+    cd url-qr-scanner
+    ```
+3.  Install NPM packages:
+    ```sh
+    npm install
+    ```
+
+### Running the Development Server
+
+Once you've installed the dependencies, you can start the development server:
 
 ```bash
 npm run dev
